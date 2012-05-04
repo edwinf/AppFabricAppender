@@ -1,6 +1,39 @@
-# Build Folders (you can keep bin if you'd like, to store dlls and pdbs)
-bin
-obj
+# Ignore file for Visual Studio 2008/2010
 
-# mstest test results
-TestResults
+*.obj
+*.exe
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+*.tokens
+[Bb]in
+[Db]ebug*/
+obj/
+[Rr]elease*/
+*resharper*
+_ReSharper*/
+[Tt]est[Rr]esult*
+[Bb]uild[Ll]og.*
+build/
+package/
+target/
+package-nuget/
+PrecompiledWeb/
+*.snk
+*.swp
+src/**/*.xml
