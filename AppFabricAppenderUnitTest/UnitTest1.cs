@@ -25,8 +25,13 @@ namespace AppFabricAppenderUnitTest
 			BasicConfigurator.Configure(rep, afap);
 
 			ILog log = LogManager.GetLogger(rep.Name, "TestSyncronousPush");
-			log.Debug("This is a debug output");
+			string origMessage = "This is a debug output";
+			log.Debug(origMessage);
 
+			var message = afap.Cache.Get(afap.LastPushedKey, afap.RegionName);
+
+			Assert.IsNotNull(message);
+			Assert.IsTrue(string.Compare(message.ToString().Trim(), "DEBUG - "+origMessage) == 0);
 		}
 	}
 }

@@ -15,6 +15,16 @@ namespace log4netAppenders
 		private DataCache _Cache;
 		private string _CacheName;
 
+		internal string LastPushedKey { get; set; }
+
+		internal DataCache Cache
+		{
+			get
+			{
+				return _Cache;
+			}
+		}
+
 		/// <summary>
 		/// The cache configuration to push the logs to
 		/// </summary>
@@ -97,8 +107,8 @@ namespace log4netAppenders
 			}
 
 			string val = base.RenderLoggingEvent(loggingEvent);
-
-			_Cache.Put(loggingEvent.TimeStamp.ToBinary().ToString(), val, this.RegionName);
+			this.LastPushedKey = loggingEvent.TimeStamp.ToBinary().ToString();
+			_Cache.Put(this.LastPushedKey, val, this.RegionName);
 		}
 
 	}
