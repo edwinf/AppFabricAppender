@@ -8,8 +8,8 @@
     <ProjectGuid>{700C382D-FC0C-4BC4-8F18-D8379B821F95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AppFabricAppender</RootNamespace>
-    <AssemblyName>AppFabricAppender</AssemblyName>
+    <RootNamespace>log4netAppenders</RootNamespace>
+    <AssemblyName>AppFabricAppender-log4net</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
