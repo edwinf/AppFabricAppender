@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppFabricAppender.cs" />
+    <Compile Include="AppFabricAppenderHost.cs" />
     <Compile Include="BufferedAppFabricAppender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

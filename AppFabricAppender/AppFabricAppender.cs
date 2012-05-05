@@ -9,43 +9,44 @@ namespace AppFabricAppender
 {
 	public class AppFabricAppender : log4net.Appender.AppenderSkeleton
 	{
-		private PatternLayout _Category;
-		private bool _ImmediateFlush;
+		private readonly static Type declaringType = typeof(AppFabricAppender);
 
-		public PatternLayout Category
-		{
-			get
-			{
-				return _Category;
-			}
-			set
-			{
-				_Category = value;
-			}
-		}
+		/// <summary>
+		/// The cache configuration to push the logs to
+		/// </summary>
+		public List<AppFabricAppenderHost> Hosts { get; set; }
 
-		public bool ImmediateFlush
-		{
-			get
-			{
-				return _ImmediateFlush;
-			}
-			set
-			{
-				_ImmediateFlush = value;
-			}
-		}
+		/// <summary>
+		/// The named cache to push the logs to.
+		/// </summary>
+		public string CacheName { get; set; }
+
+		/// <summary>
+		/// The Region to push the logs to
+		/// </summary>
+		public string RegionName { get; set; }
 
 		public AppFabricAppender()
 		{
-			this._ImmediateFlush = true;
-			this._Category = new PatternLayout("%logger");
+			this.CacheName = "default";
+			this.RegionName = Environment.MachineName;
+			this.Hosts = new List<AppFabricAppenderHost>();
+		}
+
+		public override void ActivateOptions()
+		{
+			base.ActivateOptions();
+		}
+
+		public void AddHost(AppFabricAppenderHost host)
+		{
+			this.Hosts.Add(host);
 		}
 
 		protected override void Append(log4net.Core.LoggingEvent loggingEvent)
 		{
 			string val = base.RenderLoggingEvent(loggingEvent);
-			
+
 		}
 
 	}

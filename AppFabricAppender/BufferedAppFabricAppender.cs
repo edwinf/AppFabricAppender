@@ -8,5 +8,9 @@ namespace AppFabricAppender
 	public class BufferedAppFabricAppender : log4net.Appender.BufferingAppenderSkeleton
 	{
 
+		protected override void SendBuffer(log4net.Core.LoggingEvent[] events)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
