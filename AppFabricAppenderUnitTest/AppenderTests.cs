@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Xml;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
@@ -11,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace AppFabricAppenderUnitTest
 {
 	[TestClass]
-	public class UnitTest1
+	public class AppenderTests
 	{
 
 		private AppFabricAppender CreateDefaultAppender()
@@ -87,8 +88,32 @@ namespace AppFabricAppenderUnitTest
 			double timeForAppFabric = end.Subtract(start).TotalSeconds;
 
 			Debug.WriteLine("Total seconds for debug output to app fabric: " + timeForAppFabric);
+		}
 
+		[TestMethod]
+		public void TestXMLConfig()
+		{
+			string xml = @"<log4net>
+									<appender name=""AppFabricAppender"" type=""log4netAppenders.AppFabricAppender, AppFabricAppender-log4net"">
+										<host>
+											<host>127.0.0.1</host>
+											<port>22233</port>
+										</host>
+										<layout type=""log4net.Layout.PatternLayout"" value=""%date [%thread] %-5level %logger - %message%newline"" />
+									</appender>
+									<root>
+										<level value=""ALL"" />
+										<appender-ref ref=""AppFabricAppender"" />
+									</root>
+								</log4net>";
+			XmlDocument doc = new XmlDocument();
+			doc.LoadXml(xml);
+			ILoggerRepository rep = LogManager.CreateRepository(Guid.NewGuid().ToString());
+			XmlConfigurator.Configure(rep, doc["log4net"]);
 
+			ILog log = LogManager.GetLogger(rep.Name, "XMLText");
+
+			log.Debug("Output");
 		}
 	}
 }

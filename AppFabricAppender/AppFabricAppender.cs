@@ -112,6 +112,5 @@ namespace log4netAppenders
 			_Cache.Put(key, val, this.RegionName);
 			this.LastPushedKey = key;
 		}
-
 	}
 }
