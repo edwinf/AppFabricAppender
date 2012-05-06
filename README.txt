@@ -5,11 +5,12 @@ AppFabricAppender
 	A log4net appender that pushes log entries to an AppFabric named Cache. 
 
 2) License: 
-	This appender is licensed under the apache 2 license.  Which basically means: use it however you want as long as you leave in the copyright notice in the source.
-If you're just using the DLLs, you don't need to worry about anything.
+	This appender is licensed under the apache 2 license.  Which basically means: 
+		a) use it / modify it however you want as long as you leave the copyright notice in the source.
+		b) If you're just using the DLLs, you don't need to worry about anything.
 
 /*
- *  Copyright ï¿½ 2012 the original author or authors
+ *  Copyright © 2012 edwinf (https://github.com/edwinf)
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
