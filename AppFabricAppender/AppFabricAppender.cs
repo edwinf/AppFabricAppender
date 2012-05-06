@@ -15,8 +15,6 @@ namespace log4netAppenders
 		private DataCache _Cache;
 		private string _CacheName;
 
-		internal string LastPushedKey { get; set; }
-
 		internal DataCache Cache
 		{
 			get
@@ -24,6 +22,8 @@ namespace log4netAppenders
 				return _Cache;
 			}
 		}
+
+		internal string LastPushedKey { get; set; }
 
 		/// <summary>
 		/// The cache configuration to push the logs to
@@ -85,6 +85,7 @@ namespace log4netAppenders
 
 				//config region exists before we attempt to write to it.
 				_Cache.CreateRegion(this.RegionName);
+
 			}
 			catch (Exception ex)
 			{
@@ -107,8 +108,9 @@ namespace log4netAppenders
 			}
 
 			string val = base.RenderLoggingEvent(loggingEvent);
-			this.LastPushedKey = loggingEvent.TimeStamp.ToBinary().ToString();
-			_Cache.Put(this.LastPushedKey, val, this.RegionName);
+			var key = Guid.NewGuid().ToString(); 
+			_Cache.Put(key, val, this.RegionName);
+			this.LastPushedKey = key;
 		}
 
 	}
