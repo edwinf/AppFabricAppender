@@ -25,6 +25,8 @@ namespace log4netAppenders
 			}
 		}
 
+		internal long LastPushedKey { get; set; }
+
 		/// <summary>
 		/// The cache configuration to push the logs to
 		/// </summary>
@@ -53,7 +55,7 @@ namespace log4netAppenders
 		public BufferedAppFabricAppender()
 		{
 			this.CacheName = "default";
-			this.RegionName = Environment.MachineName;
+			this.RegionName = Shared.GetMachineName();
 			this.Hosts = new List<AppFabricAppenderHost>();
 			this._ThreadQueueCount = 0;
 			this._EmptyThreadQueueEvent = new ManualResetEventSlim();
@@ -133,13 +135,19 @@ namespace log4netAppenders
 			try
 			{
 				//Block any additional threads so that we aren't intermixing buffers.
-				lock(lockObject)
+				lock (lockObject)
 				{
 					log4net.Core.LoggingEvent[] events = arg as log4net.Core.LoggingEvent[];
-					for (int i = 0; i < events.Length; i++)
+					if (events != null)
 					{
-						string val = base.RenderLoggingEvent(events[i]);
-						_Cache.Put(Guid.NewGuid().ToString(), val, this.RegionName);
+						DataCacheLockHandle lockHandle = GetCurrentLogKey(events.Length);
+						for (int i = 0; i < events.Length; i++)
+						{
+							string val = base.RenderLoggingEvent(events[i]);
+							this.LastPushedKey++;
+							_Cache.Put(this.LastPushedKey.ToString(), val, this.RegionName);
+						}
+						_Cache.PutAndUnlock(Shared.LAST_PUSHED_KEY_KEY, this.LastPushedKey, lockHandle, this.RegionName);
 					}
 				}
 			}
@@ -156,11 +164,19 @@ namespace log4netAppenders
 				this._EmptyThreadQueueEvent.Set();
 			}
 		}
+
+		private DataCacheLockHandle GetCurrentLogKey(int totalItemCount)
+		{
+			DataCacheLockHandle lockHandle = null;
+			var obj = _Cache.GetAndLock(Shared.LAST_PUSHED_KEY_KEY, TimeSpan.FromSeconds(totalItemCount), out lockHandle, this.RegionName, true);
+			this.LastPushedKey = Convert.ToInt64(obj);
+			return lockHandle;
+		}
 	}
 }
 
 /*
- *  Copyright © 2012 the original author or authors
+ *  Copyright © 2012 edwinf (https://github.com/edwinf)
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.

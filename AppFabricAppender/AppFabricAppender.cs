@@ -23,7 +23,7 @@ namespace log4netAppenders
 			}
 		}
 
-		internal string LastPushedKey { get; set; }
+		internal long LastPushedKey { get; set; }
 
 		/// <summary>
 		/// The cache configuration to push the logs to
@@ -53,7 +53,7 @@ namespace log4netAppenders
 		public AppFabricAppender()
 		{
 			this.CacheName = "default";
-			this.RegionName = Environment.MachineName;
+			this.RegionName = Shared.GetMachineName();
 			this.Hosts = new List<AppFabricAppenderHost>();
 		}
 
@@ -86,6 +86,11 @@ namespace log4netAppenders
 				//config region exists before we attempt to write to it.
 				_Cache.CreateRegion(this.RegionName);
 
+				var obj = _Cache.Get(Shared.LAST_PUSHED_KEY_KEY, this.RegionName);
+				if (obj == null)
+				{
+					_Cache.Put(Shared.LAST_PUSHED_KEY_KEY, "0", this.RegionName);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -99,6 +104,8 @@ namespace log4netAppenders
 			this.Hosts.Add(host);
 		}
 
+		
+
 		protected override void Append(log4net.Core.LoggingEvent loggingEvent)
 		{
 			if (_Cache == null)
@@ -106,17 +113,16 @@ namespace log4netAppenders
 				//we couldn't initialize the cache initially, don't mess up performance by trying to connect every time we log.
 				return;
 			}
-
 			string val = base.RenderLoggingEvent(loggingEvent);
-			var key = Guid.NewGuid().ToString(); 
-			_Cache.Put(key, val, this.RegionName);
-			this.LastPushedKey = key;
+			string currentKey = (++this.LastPushedKey).ToString();
+			_Cache.Put(currentKey, val, this.RegionName);
+			_Cache.Put(Shared.LAST_PUSHED_KEY_KEY, currentKey, this.RegionName);
 		}
 	}
 }
 
 /*
- *  Copyright © 2012 the original author or authors
+ *  Copyright © 2012 edwinf (https://github.com/edwinf)
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.

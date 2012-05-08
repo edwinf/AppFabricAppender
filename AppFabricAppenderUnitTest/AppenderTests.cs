@@ -20,9 +20,9 @@ namespace AppFabricAppenderUnitTest
 			AppFabricAppender afap = new AppFabricAppender();
 			afap.AddHost(new AppFabricAppenderHost() { Host = "127.0.0.1", Port=22233});
 			afap.Layout = new SimpleLayout();
-
+			
 			afap.ActivateOptions();
-			afap.Cache.ClearRegion(afap.RegionName);
+			
 
 			return afap;
 		}
@@ -49,27 +49,27 @@ namespace AppFabricAppenderUnitTest
 		[TestMethod]
 		public void SpeedTest()
 		{
-			Trace.Listeners.Clear();
-			Trace.Listeners.Add(new DefaultTraceListener());
+			//Trace.Listeners.Clear();
+			//Trace.Listeners.Add(new DefaultTraceListener());
 
-			ILoggerRepository rep = LogManager.CreateRepository(Guid.NewGuid().ToString());
+			//ILoggerRepository rep = LogManager.CreateRepository(Guid.NewGuid().ToString());
 
-			TraceAppender traceAppender = new TraceAppender();
-			traceAppender.Layout = new SimpleLayout();
-			traceAppender.ActivateOptions();
-			BasicConfigurator.Configure(rep, traceAppender);
+			//TraceAppender traceAppender = new TraceAppender();
+			//traceAppender.Layout = new SimpleLayout();
+			//traceAppender.ActivateOptions();
+			//BasicConfigurator.Configure(rep, traceAppender);
 
-			ILog log = LogManager.GetLogger(rep.Name, GetType());
-			DateTime start = DateTime.Now;
-			for (int i = 0; i < 100000; i++)
-			{
-				log.Debug(i.ToString());
-			}
-			DateTime end = DateTime.Now;
+			//ILog log = LogManager.GetLogger(rep.Name, GetType());
+			//DateTime start = DateTime.Now;
+			//for (int i = 0; i < 100000; i++)
+			//{
+			//	log.Debug(i.ToString());
+			//}
+			//DateTime end = DateTime.Now;
 
-			double timeForTrace = end.Subtract(start).TotalSeconds;
+			//double timeForTrace = end.Subtract(start).TotalSeconds;
 
-			Debug.WriteLine("Total seconds for debug output to trace listener: " + timeForTrace);
+			//Debug.WriteLine("Total seconds for debug output to trace listener: " + timeForTrace);
 
 			ILoggerRepository appfabricRep = LogManager.CreateRepository(Guid.NewGuid().ToString());
 
@@ -79,12 +79,12 @@ namespace AppFabricAppenderUnitTest
 
 			ILog appfabricLog = LogManager.GetLogger(appfabricRep.Name, "TestSyncronousPush");
 
-			start = DateTime.Now;
+			DateTime start = DateTime.Now;
 			for (int i = 0; i < 100000; i++)
 			{
 				appfabricLog.Debug(i.ToString());
 			}
-			end = DateTime.Now;
+			DateTime end = DateTime.Now;
 			double timeForAppFabric = end.Subtract(start).TotalSeconds;
 
 			Debug.WriteLine("Total seconds for debug output to app fabric: " + timeForAppFabric);
@@ -119,8 +119,7 @@ namespace AppFabricAppenderUnitTest
 }
 
 /*
- *
- *  Copyright © 2012 the original author or authors
+ *  Copyright © 2012 edwinf (https://github.com/edwinf)
  *  
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.

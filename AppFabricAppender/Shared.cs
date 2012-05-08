@@ -5,12 +5,24 @@ using System.Text;
 
 namespace log4netAppenders
 {
-	public class AppFabricAppenderHost
+	internal class Shared
 	{
-		public string Host { get; set; }
-		public int Port { get; set; }
+		internal const string LAST_PUSHED_KEY_KEY = "TailLogIndex";
+
+		/// <summary>
+		/// used to remove any machine name characters that cause a problem with the cache region name. 
+		/// (no idea why these characters cause problems, but they seem to.)
+		/// </summary>
+		/// <returns></returns>
+		internal static string GetMachineName()
+		{
+			return Environment.MachineName.Replace("-", "");
+		}
 	}
+
+	
 }
+
 
 /*
  *  Copyright © 2012 edwinf (https://github.com/edwinf)
@@ -27,3 +39,4 @@ namespace log4netAppenders
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
 */
+
