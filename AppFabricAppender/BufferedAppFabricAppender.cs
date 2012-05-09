@@ -90,6 +90,11 @@ namespace log4netAppenders
 				//config region exists before we attempt to write to it.
 				_Cache.CreateRegion(this.RegionName);
 
+				var obj = _Cache.Get(Shared.LAST_PUSHED_KEY_KEY, this.RegionName);
+				if (obj == null)
+				{
+					_Cache.Put(Shared.LAST_PUSHED_KEY_KEY, "0", this.RegionName);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -117,11 +122,12 @@ namespace log4netAppenders
 		{
 			if (events != null && events.Length > 0)
 			{
-				//There is no bulk put unfortunatly, so spin off a thread and push them in one at a time.
-
-				this._EmptyThreadQueueEvent.Reset();
-				//atomic increment of the thread queue (in case of context switching)
+				//increment first then set the event in case of threading shenanigans on the EndSend 
+				//(don't want to set then context switch and another come in and clear the event before the count is incremented)
 				Interlocked.Increment(ref _ThreadQueueCount);
+				this._EmptyThreadQueueEvent.Reset();
+
+				//There is no bulk put unfortunatly, so spin off a thread and push them in one at a time.
 				bool success = ThreadPool.QueueUserWorkItem(new WaitCallback(ProcessEventsAsync), events);
 				if (!success)
 				{
@@ -134,20 +140,31 @@ namespace log4netAppenders
 		{
 			try
 			{
-				//Block any additional threads so that we aren't intermixing buffers.
+				//Block any additional threads so that we aren't intermixing buffers since we can't write all the events at once
 				lock (lockObject)
 				{
 					log4net.Core.LoggingEvent[] events = arg as log4net.Core.LoggingEvent[];
 					if (events != null)
 					{
-						DataCacheLockHandle lockHandle = GetCurrentLogKey(events.Length);
+
+						var obj = _Cache.Get(Shared.LAST_PUSHED_KEY_KEY,this.RegionName);
+						if (obj != null)
+						{
+							this.LastPushedKey = Convert.ToInt64(obj);
+						}
+						else
+						{
+							this.LastPushedKey = 0;
+						}
+						
+
 						for (int i = 0; i < events.Length; i++)
 						{
 							string val = base.RenderLoggingEvent(events[i]);
 							this.LastPushedKey++;
 							_Cache.Put(this.LastPushedKey.ToString(), val, this.RegionName);
 						}
-						_Cache.PutAndUnlock(Shared.LAST_PUSHED_KEY_KEY, this.LastPushedKey, lockHandle, this.RegionName);
+						_Cache.Put(Shared.LAST_PUSHED_KEY_KEY, this.LastPushedKey, this.RegionName);
 					}
 				}
 			}
@@ -163,14 +180,6 @@ namespace log4netAppenders
 			{
 				this._EmptyThreadQueueEvent.Set();
 			}
-		}
-
-		private DataCacheLockHandle GetCurrentLogKey(int totalItemCount)
-		{
-			DataCacheLockHandle lockHandle = null;
-			var obj = _Cache.GetAndLock(Shared.LAST_PUSHED_KEY_KEY, TimeSpan.FromSeconds(totalItemCount), out lockHandle, this.RegionName, true);
-			this.LastPushedKey = Convert.ToInt64(obj);
-			return lockHandle;
 		}
 	}
 }

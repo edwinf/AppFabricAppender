@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Xml;
 using log4net;
 using log4net.Appender;
 using log4net.Config;
+using log4net.Core;
 using log4net.Layout;
 using log4net.Repository;
+using log4net.Repository.Hierarchy;
 using log4netAppenders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -22,8 +25,16 @@ namespace AppFabricAppenderUnitTest
 			afap.Layout = new SimpleLayout();
 			
 			afap.ActivateOptions();
-			
+			return afap;
+		}
 
+		private BufferedAppFabricAppender CreateBufferedAppender()
+		{
+			BufferedAppFabricAppender afap = new BufferedAppFabricAppender();
+			afap.AddHost(new AppFabricAppenderHost() { Host = "127.0.0.1", Port = 22233 });
+			afap.Layout = new SimpleLayout();
+			afap.BufferSize = -1;
+			afap.ActivateOptions();
 			return afap;
 		}
 
@@ -44,6 +55,26 @@ namespace AppFabricAppenderUnitTest
 
 			Assert.IsNotNull(message);
 			Assert.IsTrue(string.Compare(message.ToString().Trim(), "DEBUG - "+origMessage) == 0);
+		}
+
+		[TestMethod]
+		public void TestBufferedAppender()
+		{
+			ILoggerRepository rep = LogManager.CreateRepository(Guid.NewGuid().ToString());
+			BufferedAppFabricAppender afap = CreateBufferedAppender();
+
+			BasicConfigurator.Configure(rep, afap);
+
+			ILog log = LogManager.GetLogger(rep.Name, "TestBufferedPush");
+			string origMessage = "This is a debug output";
+			log.Debug(origMessage);
+			//wait for the async to process
+			Thread.Sleep(5000);
+			var message = afap.Cache.Get(afap.LastPushedKey.ToString(), afap.RegionName);
+
+			Assert.IsNotNull(message);
+			Assert.IsTrue(string.Compare(message.ToString().Trim(), "DEBUG - " + origMessage) == 0);
+			
 		}
 
 		[TestMethod]
