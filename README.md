@@ -26,21 +26,21 @@ AppFabricAppender
 */
 
 3. Sample Config:
-
-<log4net>
-	<appender name="AppFabricAppender" type="log4netAppenders.AppFabricAppender, AppFabricAppender-log4net">
-		<host>
-			<host>127.0.0.1</host>
-			<port>22233</port>
-		</host>
-		<layout type="log4net.Layout.PatternLayout" value="%date [%thread] %-5level %logger - %message%newline" />
-	</appender>
-	<root>
-		<level value="ALL" />
-		<appender-ref ref=""AppFabricAppender"" />
-	</root>
-</log4net>
-
+<pre><code>
+&lt;log4net&gt;
+	&lt;appender name="AppFabricAppender" type="log4netAppenders.AppFabricAppender, AppFabricAppender-log4net"&gt;
+		&lt;host&gt;
+			&lt;host&gt;127.0.0.1&lt;/host&gt;
+			&lt;port&gt;22233&lt;/port&gt;
+		&lt;/host&gt;
+		&lt;layout type="log4net.Layout.PatternLayout" value="%date [%thread] %-5level %logger - %message%newline" /&gt;
+	&lt;/appender&gt;
+	&lt;root&gt;
+		&lt;level value="ALL" /&gt;
+		&lt;appender-ref ref=""AppFabricAppender"" /&gt;
+	&lt;/root&gt;
+&lt;/log4net&gt;
+</code></pre>
 4. To view the entries, there is a simple log reader that is in this source. The code in there can be translated to a console
 app pretty simply if that would more suite your needs.  We are in the process of writing a more full featured
 cache object viewer in another project: https://github.com/edwinf/WindowsAppFabricObjectViewer.  
