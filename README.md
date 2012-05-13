@@ -1,10 +1,10 @@
 AppFabricAppender
 =================
 
-1) Overview
+1. Overview
 	A log4net appender that pushes log entries to an AppFabric named Cache. 
 
-2) License: 
+2. License: 
 	This appender is licensed under the apache 2 license.  Which basically means: 
 		a) use it / modify it however you want as long as you leave the copyright notice in the source.
 		b) If you're just using the DLLs, you don't need to worry about anything.
@@ -25,7 +25,7 @@ AppFabricAppender
  *  limitations under the License.
 */
 
-3) Sample Config:
+3. Sample Config:
 
 <log4net>
 	<appender name="AppFabricAppender" type="log4netAppenders.AppFabricAppender, AppFabricAppender-log4net">
@@ -40,3 +40,7 @@ AppFabricAppender
 		<appender-ref ref=""AppFabricAppender"" />
 	</root>
 </log4net>
+
+4. To view the entries, there is a simple log reader that is in this source. The code in there can be translated to a console
+app pretty simply if that would more suite your needs.  We are in the process of writing a more full featured
+cache object viewer in another project: https://github.com/edwinf/WindowsAppFabricObjectViewer.  
