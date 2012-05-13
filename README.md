@@ -1,7 +1,7 @@
 AppFabricAppender
 =================
 
-1. Overview
+1. *Overview*
 	A log4net appender that pushes log entries to an AppFabric named Cache. 
 
 2. Sample Config:
@@ -20,9 +20,12 @@ AppFabricAppender
 &lt;/log4net&gt;
 </code></pre>
 
-3. To view the entries, there is a simple log reader that is in this source. The code in there can be translated to a console
-app pretty simply if that would more suite your needs.  We are in the process of writing a more full featured
-cache object viewer in another project: https://github.com/edwinf/WindowsAppFabricObjectViewer.  
+3. To view the entries, there is a simple log reader that is in this source and in the downloads section.  It provides viewing of logs in 
+one region at a time and has an export to text option.
+
+The code is straightforward and can be translated quickly to a console app if that would more suite your needs. 
+
+We are in the process of writing a more full featured cache object viewer in another project: https://github.com/edwinf/WindowsAppFabricObjectViewer.  
 
 
 4. License: 
