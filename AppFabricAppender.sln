@@ -14,6 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{60D486
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFabricLogReader", "AppFabricLogReader\AppFabricLogReader.csproj", "{0ED20F35-82B2-4B25-A5D8-EA1C631348B2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NugetSpecs", "NugetSpecs", "{3A300BE6-839C-4D7A-859D-84A925385257}"
+	ProjectSection(SolutionItems) = preProject
+		AppFabricAppender\AppFabricAppender.nuspec = AppFabricAppender\AppFabricAppender.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <DataGrid x:Name="Grid">
-            
+        <DataGrid x:Name="Grid" Margin="0,0,0,40">
+
         </DataGrid>
+        <Button Height="25" Content="Export to Text" Click="Button_Click_1" Margin="364,277,0,10" />
     </Grid>
 </Window>
